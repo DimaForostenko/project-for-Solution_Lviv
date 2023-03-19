@@ -1,0 +1,5 @@
+.*
+!.gitignore
+!.dockerignore
+*.mongodb
+/node_modules/
