@@ -1,0 +1,4 @@
+export const SOCKET_EVENT = {
+  NEW_TRIP:"NEW_TRIP",
+  NEW_TRIP_ERROR : "NEW_TRIP_ERROR"
+}
