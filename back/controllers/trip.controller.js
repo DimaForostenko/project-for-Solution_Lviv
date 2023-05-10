@@ -3,7 +3,7 @@ const Trip = require("../models/Trip");
 
 module.exports.createTrip = async (req, res, next) => {
   try {
-    const { departure, arrival, departureTime, arrivalTime } = req.body;
+    const { body } = req;
 
     // Validate input using yup schema
     const schema = yup.object().shape({
@@ -16,7 +16,7 @@ module.exports.createTrip = async (req, res, next) => {
     await schema.validate({ departure, arrival, departureTime, arrivalTime });
 
     // Create a new trip object based on the input
-    const newTrip = new Trip({ departure, arrival, departureTime, arrivalTime });
+    const newTrip = new Trip({ body });
 
     // Save the new trip to the database
     await newTrip.save();
@@ -30,7 +30,7 @@ module.exports.createTrip = async (req, res, next) => {
   module.exports.getAllTrip =  async (req, res, next) => {
     try {
       const trips = await Trip.find();
-      res.json(trips);
+      res.status(200).send({data:trips});
     } catch (error) {
       next(error);
     }
@@ -38,7 +38,7 @@ module.exports.createTrip = async (req, res, next) => {
 
   module.exports.updateTrip = async (req, res, next) => {
     try {
-      const { departure, arrival, departureTime, arrivalTime } = req.body;
+      const {  } = body;
   
       // Validate input using yup schema
       const schema = yup.object().shape({
@@ -51,18 +51,14 @@ module.exports.createTrip = async (req, res, next) => {
       await schema.validate({ departure, arrival, departureTime, arrivalTime });
   
       // Find the trip in the database and update its properties
-      const trip = await Trip.findByIdAndUpdate(
-        req.params.id,
-        { departure, arrival, departureTime, arrivalTime },
-        { new: true }
-      );
-  
-      if (!trip) {
+      const {body,params:{tripId}}=req; 
+      const trip=await Trip.findByIdAndUpdate(tripId,body,{ new: true });
+      if (!tripId) {
         return res.status(404).json({ message: "Trip not found" });
       }
   
       // Send a success response
-      res.json({ message: "Trip updated", trip });
+      res.status(200).send(trip );
     } catch (error) {
       next(error);
     }
@@ -70,15 +66,14 @@ module.exports.createTrip = async (req, res, next) => {
 
   module.exports.deleteTrip = async (req, res, next) => {
     try {
+      console.log(req.params.id)
       // Find the trip in the database and delete it
-      const trip = await Trip.findByIdAndDelete(req.params.id);
-  
+      const trip = await Trip.findByIdAndDelete({"_id":req.params.id,});
       if (!trip) {
         return res.status(404).json({ message: "Trip not found" });
       }
-  
       // Send a success response
-      res.json({ message: "Trip deleted", trip });
+      res.json({success:true} );
     } catch (error) {
       next(error);
     }

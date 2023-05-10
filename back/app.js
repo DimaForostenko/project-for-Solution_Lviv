@@ -1,7 +1,5 @@
 const express = require("express");
-
-const yup = require("yup");
-const Trip = require("./models/Trip");
+const cors = require("cors")
 const TripControllers = require("./controllers/trip.controller")
 
 const app = express();
